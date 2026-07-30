@@ -1,13 +1,30 @@
 # Refining Workflow — 子 Agent 执行
 
+## 路径约定
+
+本文件中 `{workspace}` = OpenClaw agent 工作目录。`{baseDir}` = Deep-Forge Skill 目录。
+
 ## 触发
 
 所有对标文章学完后，用户说"精炼策略库"。
 
 ## 子 Agent 输入
 
-- 本文件
-- workspace 中的 strategy-memory.md（完整策略库）
+- `{baseDir}/SKILL.md`（核心原则 + 关键约束）
+- `{baseDir}/references/strategy-format.md`（策略字段结构 + 分层规则——精炼时需要知道字段定义和层级含义才能正确过滤与合并）
+- `{workspace}/deep-forge/strategy-memory.md`（完整策略库）
+
+## 前置检查
+
+```
+{workspace}/deep-forge/strategy-memory.md 存在？
+  → 是：继续
+  → 否：回复用户"策略库尚未建立，请先学习对标文章"，终止
+
+策略库中策略 ≥ 1 条？
+  → 是：继续
+  → 否：回复用户"策略库为空，无需精炼"，终止
+```
 
 ## 执行步骤
 
@@ -45,7 +62,7 @@
 
 ### 5. 写入
 
-写入 `~/.openclaw/workspace/deep-forge/refined-strategies.md`。
+写入 `{workspace}/deep-forge/refined-strategies.md`。原始策略库不动。精炼后写作模式自动优先读取精炼版。
 
 ### 6. 输出精炼报告
 
@@ -54,9 +71,18 @@
 - 完整策略库：[N] 条 → 精炼后：[N] 条
 - 移除不可复制：[N] 条（列出名称 + 原因）
 - 合并重叠：[N] 对 → [N] 条
-- 情境策略降级：[N] 条因验证不足（<2次）未进入精炼版
+- 情境策略因验证不足（<2次）未进入：[N] 条
 ```
+
+## 错误处理
+
+| 场景 | 行为 |
+|------|------|
+| 策略库不存在 | 回复"策略库尚未建立，请先学习对标文章" |
+| 策略库为空（0 条） | 回复"策略库为空，无需精炼" |
+| 精炼后结果为 0 条 | 回复"精炼后无可用策略——原始策略库中无可复制项。建议扩大语料或检查成功归因判断" |
+| 写入磁盘失败 | 回复"精炼版写入失败，请检查 workspace 权限"，不覆盖已有 refined-strategies.md |
 
 ## 关键规则
 
-精炼后写作模式自动优先读取 refined-strategies.md。精炼版是日常写作的策略源。
+精炼版是日常写作的策略源。原始策略库保留不动作为完整学习记录。

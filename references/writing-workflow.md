@@ -1,8 +1,12 @@
 # Writing Workflow — 主会话执行
 
+## 路径约定
+
+本文件中 `{workspace}` = OpenClaw agent 工作目录。
+
 ## 前置条件
 
-workspace 中 strategy-memory.md 策略 ≥ 3 条。不足则拒绝："策略库还不够，先学几篇文章再写。"
+`{workspace}/deep-forge/strategy-memory.md` 中策略 ≥ 3 条。不足则拒绝："策略库还不够，先学几篇文章再写。"
 
 ## 执行步骤
 
@@ -12,7 +16,7 @@ workspace 中 strategy-memory.md 策略 ≥ 3 条。不足则拒绝："策略库
 
 ### 2. 读取策略
 
-优先读 `~/.openclaw/workspace/deep-forge/refined-strategies.md`（如存在），否则读 `strategy-memory.md`。
+优先读 `{workspace}/deep-forge/refined-strategies.md`（如存在），否则读 `{workspace}/deep-forge/strategy-memory.md`。
 
 从「类型→策略匹配表」读取该类型匹配的 🔴 和 🟡 策略。浏览 🟢 策略看是否有特别适配本文主题的。
 
@@ -27,7 +31,7 @@ workspace 中 strategy-memory.md 策略 ≥ 3 条。不足则拒绝："策略库
 
 约束：
 - 不能全来自同一功能方向（覆盖"开头抓人""正文组织""建立信任""收尾"至少 3 个不同功能）
-- 读 `recent-outputs.md`，如上篇策略重叠 > 60%，调整选择
+- 读 `{workspace}/deep-forge/recent-outputs.md`，如上篇策略重叠 > 60%，调整选择
 
 ### 4. 处理知识库
 
@@ -71,4 +75,4 @@ workspace 中 strategy-memory.md 策略 ≥ 3 条。不足则拒绝："策略库
 
 ### 8. 输出 + 记录
 
-输出 MD 文件。追加一条到 `~/.openclaw/workspace/deep-forge/recent-outputs.md`（日期、标题、使用策略、文章类型）。保持最近 10 条。
+输出 MD 文件。追加一条到 `{workspace}/deep-forge/recent-outputs.md`（日期、标题、使用策略、文章类型）。保持最近 10 条。

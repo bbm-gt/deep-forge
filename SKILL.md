@@ -23,18 +23,24 @@ description: 深度学习对标账号写作方法论，用策略驱动写作，�
 
 学习/精炼用子 Agent 的原因：需要跨批次累积状态（计数器、去重、升级），子 Agent 的长会话完整保留这些状态，结束一次性写入 workspace。
 
-## 文件布局
+## 路径约定
+
+本文档中 `{workspace}` = OpenClaw agent 的工作目录（通常为 `~/.openclaw/workspace`）。Agent 运行时 OpenClaw 自动注入。
 
 ```
-只读 Skill 目录 (本目录):
-  SKILL.md + references/*.md
+只读 Skill 目录:
+  {baseDir}/SKILL.md + {baseDir}/references/*.md
 
 Agent 可读写数据:
-  ~/.openclaw/workspace/deep-forge/
+  {workspace}/deep-forge/
   ├── strategy-memory.md       # 策略库 + 计数器 + 匹配表
   ├── refined-strategies.md    # 精炼后策略（写作时优先读取）
-  └── recent-outputs.md        # 最近输出记录
-```
+  └── recent-outputs.md        # 最近输出记录（保持最近 10 条）
+
+初始化模板:
+  {baseDir}/references/strategy-memory-template.md
+  子 Agent 首次执行时，如 {workspace}/deep-forge/strategy-memory.md 不存在，
+  复制此模板创建。之后子 Agent 在副本上增量更新。
 
 ## 策略分层
 

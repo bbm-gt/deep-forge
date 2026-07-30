@@ -80,9 +80,13 @@
 
 只有归因于"内容结构"和"表达策略"的策略可进入策略库。
 
+## 初始化
+
+子 Agent 首次执行时，如 `{workspace}/deep-forge/strategy-memory.md` 不存在，从 `{baseDir}/references/strategy-memory-template.md` 复制创建。
+
 ## workspace 中 strategy-memory.md 的结构
 
-Agent 需要维护 workspace 中 strategy-memory.md 的以下区域：
+Agent 需要维护 `{workspace}/deep-forge/strategy-memory.md` 的以下区域：
 
 ```
 计数器（已处理文章总数 / 当前轮次）

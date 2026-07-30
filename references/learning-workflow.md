@@ -1,20 +1,36 @@
 # Learning Workflow — 子 Agent 执行
 
-此文件在子 Agent 启动时读入，与 SKILL.md 和 strategy-format.md 一起构成子 Agent 的完整规则。
+此文件在子 Agent 启动时读入，与 `{baseDir}/SKILL.md` 和 `{baseDir}/references/strategy-format.md` 一起构成子 Agent 的完整规则。
+
+## 路径约定
+
+本文件中 `{workspace}` = OpenClaw agent 工作目录。`{baseDir}` = Deep-Forge Skill 目录。
 
 ## 子 Agent 输入
 
-- 本文件 + `{baseDir}/references/strategy-format.md`（规则）
-- workspace 中已有的 strategy-memory.md（如存在——作为累积起点）
-- 用户指定的文章路径或粘贴内容
+- `{baseDir}/SKILL.md`（核心原则 + 关键约束）
+- `{baseDir}/references/strategy-format.md`（策略格式 + 分层规则）
+- `{baseDir}/references/strategy-memory-template.md`（首次执行时的初始化模板）
+- `{workspace}/deep-forge/strategy-memory.md`（如存在——作为累积起点）
+- 用户指定的文章路径
+
+## 前置检查
+
+子 Agent 启动后，先确认用户提供的文章路径有效：
+
+```
+文章路径存在且包含可读取的文件？
+  → 是：继续执行
+  → 否：回复用户"未找到文章，请确认路径"，终止
+```
+
+如 `{workspace}/deep-forge/strategy-memory.md` 不存在，从 `{baseDir}/references/strategy-memory-template.md` 复制创建。
 
 ## 执行步骤
 
 ### 1. 递增计数器
 
-读取 workspace strategy-memory.md 顶部 `已处理文章总数` 和 `当前轮次`。本轮结束后：总数 += 本轮处理篇数，轮次 +1。
-
-如 workspace 尚无 strategy-memory.md，按 strategy-format.md 中的模板创建，计数器从 0 开始。
+读取 `{workspace}/deep-forge/strategy-memory.md` 顶部 `已处理文章总数` 和 `当前轮次`。本轮结束后：总数 += 本轮处理篇数，轮次 +1。
 
 ### 2. 逐篇分析
 
@@ -54,7 +70,9 @@
 
 ### 6. 写入 workspace
 
-将更新后的 strategy-memory.md 写入 `~/.openclaw/workspace/deep-forge/strategy-memory.md`。
+将更新后的 strategy-memory.md 写入 `{workspace}/deep-forge/strategy-memory.md`。
+
+写入前先创建备份：如已有旧文件，复制为 `strategy-memory.backup.md`。写入完成后再删除备份。如果写入过程中断，子 Agent 可从备份恢复——主会话发现既有 `strategy-memory.md` 又有 `.backup.md` 时，提示用户上次学习可能未完成。
 
 ### 7. 输出学习报告
 
@@ -69,6 +87,17 @@
 - 策略库：[N] 条（核心X/模式Y/情境Z）
 - 累计：[N] 篇
 ```
+
+## 错误处理
+
+| 场景 | 行为 |
+|------|------|
+| 用户未提供文章路径 | 回复"请提供文章路径或直接粘贴文章内容" |
+| 文章路径不存在 | 回复"路径 [路径] 下未找到文件，请确认" |
+| 文章路径存在但为空（0 个文件） | 回复"路径下没有可读取的文章文件" |
+| 子 Agent 执行到一半被中断 | 下次启动时检查 `{workspace}/deep-forge/` 下是否存在 `strategy-memory.backup.md`。如存在，提示用户"检测到上次学习可能未完成，是否从备份恢复？" |
+| 某篇文章无法解析（乱码/非文本） | 跳过该篇，在报告中标注"跳过 [N] 篇（无法解析）" |
+| workspace 目录不存在 | 自动创建 `{workspace}/deep-forge/` 目录 |
 
 ## 关键规则
 
